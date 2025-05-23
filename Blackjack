@@ -16,11 +16,16 @@ class Player:
             hit(self)
             i += 1
 
-    def print_hand(self):
+    def print_hand(self, hide):
       print("{}'s hand:".format(self.player_name))
-      for card in self.player_hand:
+      if self.player_name == "Dealer" and hide:
+        temp_list = self.player_hand[1:]
+        for card in temp_list:
           print(card.name)
-      print(" ")
+      else:   
+        for card in self.player_hand:
+            print(card.name)
+        print(" ")
 
     def winning_factor(self):
       factor = (self.hand_value/21)
@@ -38,26 +43,37 @@ class Card:
 
     def __repr__(self):
         print(self.name)
-def dealer_play(player):
-  if 
-  pass
+
+def dealer_play(dealer):
+  if count_hand_value(dealer) <= 16:
+    hit(dealer)
+
+    pass
 
 def count_hand_value(player):
+  value = 0
   for cards in player.player_hand:
-    if cards.value == "Ace":
+    if cards.value == "Ace" and player.player_name == "Dealer":
+      if value < 10:
+        value += 11
+      else:
+        value += 1
+    elif cards.value == "Ace" and player.player_name == player1.player_name:
       ace_value = input("Dealer: You have an ace in your hand, would you like to use it as a 1 or an 11? ")
-      player.hand_value += int(ace_value)
+      value += int(ace_value)
     elif cards.value == "King":
-      player.hand_value += 12
+      value += 12
     elif cards.value == "Queen":
-      player.hand_value += 11
+      value += 11
     elif cards.value == "Jack":
-      player.hand_value += 10
+      value += 10
     else:
       player.hand_value += cards.value
 
+  return value
+
 def bust_check(player):
-  if player.hand_value > 21:
+  if player.hand_value > 22:
     return True
   else:
     return False
@@ -80,6 +96,12 @@ def get_hand(player):
     i += 1
 
 def game(dealer, player):
+  dealer.get_hand()
+  dealer.print_hand(True)
+
+  player1.get_hand()
+  player1.print_hand(True)
+
   ongoing_game = True
   while ongoing_game:
     valid_response = False
@@ -92,15 +114,18 @@ def game(dealer, player):
         if response == "Hit":
           hit(player)
           print("Here is your new hand")
-          player.print_hand()
+          player.print_hand(True)
         elif response == "Stand":
           valid_response = True
           ongoing_game = False
       else:
         print("Dealer: Invalid play")
+    dealer_play(dealer)
+  dealer.print_hand(False)
+  player.print_hand(True)
 
-  count_hand_value(dealer)
-  count_hand_value(player)
+  dealer.hand_value += count_hand_value(dealer)
+  player.hand_value += count_hand_value(player)
 
   dealer_factor = dealer.winning_factor()
   player_factor = dealer.winning_factor()
@@ -119,14 +144,14 @@ def game(dealer, player):
 used_cards = []
 plays = ["Hit", "Stand"]
 
+
+
 player_name = input("Hello player!, what is your name?: ")
 print("Welcome {}, get ready to play some Blackjack!".format(player_name))
 
 dealer = Player("Dealer")
-dealer.get_hand()
-dealer.print_hand()
+
 player1 = Player(player_name)
-player1.get_hand()
-player1.print_hand()
+
 
 game(dealer, player1)
